@@ -1,193 +1,289 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
+
 <meta charset="UTF-8" />
-<title>Игри на Знания</title>
-    <!-- Google tag (gtag.js) -->
+<title>Българска Национална Куиз Асоциация</title>
+
+<!-- Google tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PK66NTHPN8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-PK66NTHPN8');
 </script>
+
 <style>
 body {
-    background-color: #001a33;
-    color: yellow;
+    margin: 0;
     font-family: Arial, sans-serif;
-    text-align: center; /* центрира заглавието */
-}
-
-table {
-    border-collapse: collapse;
-    margin: 0 auto;  /* центрира таблицата */
-    width: auto;     /* ширина според съдържанието */
-}
-
-/* базово оформление */
-th, td {
-    padding: 8px 12px;
-    border: 1px solid #666;
-    white-space: nowrap;
+    background-color: #001a33;
+    color: white;
     text-align: center;
 }
 
-/* колоната Име — auto-fit + ляво подравняване */
-table th:nth-child(2),
-table td:nth-child(2) {
-    text-align: left;
-    width: auto;            /* авто размер */
-    max-width: none;        /* без ограничение */
-}
-
-th {
-    background-color: #003366;
-    color: #ffff66;
-}
-
-td {
-    color: #ffea80;
-}
-
-tr:nth-child(even) {
+/* ===== HEADER ===== */
+header {
+    padding: 25px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
     background-color: #00264d;
+    flex-wrap: wrap;
+}
+
+.logo {
+    height: 140px;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 55px;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1.05;
+    text-align: left;
+
+    background: linear-gradient(
+        to bottom,
+        #ffffff 0%,
+        #ffffff 25%,
+        #009e3d 25%,
+        #009e3d 75%,
+        #d80000 75%,
+        #d80000 100%
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 3px #ffffff;
+}
+
+/* ===== NAVIGATION ===== */
+nav.main-nav {
+    background-color: #003366;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 2px solid #00509e;
+}
+
+nav.main-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 18px;
+    border-radius: 6px;
+    background-color: #003d7a;
+    border: 2px solid #00509e;
+    transition: 0.2s;
+}
+
+nav.main-nav a:hover {
+    background-color: #004a9f;
+    transform: scale(1.05);
+}
+
+/* ===== LOGO POPUP ===== */
+#logo-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#logo-popup img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+/* ===== PARTNERS ===== */
+.partners-wrapper {
+    width: 100%;
+    border-top: 2px solid #00509e;
+    margin-top: 40px;
+    padding: 20px 20px 40px;
+}
+
+.partners-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffcc00;
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.partners-grid {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 18px;
+    justify-items: center;
+}
+
+.partner-cell {
+    max-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.partner-box {
+    width: 100%;
+    height: 72px;
+    background: #ffffff;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+}
+
+.partner-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.partner-name {
+    margin-top: 8px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.partner-name a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.partner-name a:hover {
+    color: #ffd966;
+    text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1000px) {
+    .partners-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+@media (max-width: 700px) {
+    header { flex-direction: column; }
+    .title { font-size: 34px; text-align: center; }
+    .logo { height: 110px; }
+    .partners-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 420px) {
+    .partners-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
+
 <body>
-<h1>Игри на Знания - Светкавичен куиз, епизод 38 (06 декември 2025 г)</h1>
 
-<table>
-<thead>
-<tr>
-<th>Място</th>
-<th>Име</th>
-<th>Бързина</th>
-<th>Верни</th>
-<th>Точки</th>
-</tr>
-</thead>
+<header>
+    <div class="title">
+        БЪЛГАРСКА НАЦИОНАЛНА<br>
+        КУИЗ АСОЦИАЦИЯ
+    </div>
+    <img src="emblema.png" alt="Лого" class="logo">
+</header>
 
-<tbody>
-<tr><td>1</td><td class="name">Владимир Бекяров</td><td>8710</td><td>10</td><td>100</td></tr>
-<tr><td>2</td><td class="name">Зорка</td><td>8060</td><td>9</td><td>95</td></tr>
-<tr><td>3</td><td class="name">Деян Димитров</td><td>8040</td><td>9</td><td>90</td></tr>
-<tr><td>4</td><td class="name">Иванка Митова</td><td>8020</td><td>9</td><td>85</td></tr>
-<tr><td>5</td><td class="name">Борис Русев (-2 отговора)</td><td>7770</td><td>9</td><td>84</td></tr>
-<tr><td>6</td><td class="name">Иван Клисаров</td><td>7700</td><td>9</td><td>83</td></tr>
-<tr><td>7</td><td class="name">Иван Петров</td><td>7670</td><td>9</td><td>82</td></tr>
-<tr><td>8</td><td class="name">Виолета Георгиева </td><td>7210</td><td>8</td><td>81</td></tr>
-<tr><td>9</td><td class="name">Златан Мераков</td><td>7120</td><td>8</td><td>80</td></tr>
-<tr><td>10</td><td class="name">Тихомир Семов </td><td>7060</td><td>8</td><td>79</td></tr>
-<tr><td>11</td><td class="name">Димитър Георгиев (-1 отговор)</td><td>6950</td><td>8</td><td>78</td></tr>
-<tr><td>12</td><td class="name">Пламен6000 ???</td><td>6590</td><td>8</td><td>77</td></tr>
-<tr><td>13</td><td class="name">Христомир Раков</td><td>6300</td><td>8</td><td>76</td></tr>
-<tr><td>14</td><td class="name">Георги Радулов</td><td>6240</td><td>7</td><td>75</td></tr>
-<tr><td>15</td><td class="name">Пламен Младенов  </td><td>6210</td><td>7</td><td>74</td></tr>
-<tr><td>16</td><td class="name">Марин Николов</td><td>6180</td><td>7</td><td>73</td></tr>
-<tr><td>17</td><td class="name">Виктор Баталски</td><td>6110</td><td>8</td><td>72</td></tr>
-<tr><td>18</td><td class="name">Татяна Пенева</td><td>6090</td><td>7</td><td>71</td></tr>
-<tr><td>19</td><td class="name">Иван Пантев </td><td>6060</td><td>7</td><td>70</td></tr>
-<tr><td>20</td><td class="name">Светослав Чимев</td><td>6020</td><td>7</td><td>69</td></tr>
-<tr><td>21</td><td class="name">Иван Иванов (-2 отговора)</td><td>6000</td><td>7</td><td>68</td></tr>
-<tr><td>22</td><td class="name">Павлина Джамбазова (-1 отговор)</td><td>5940</td><td>8</td><td>67</td></tr>
-<tr><td>23</td><td class="name">Мая Михайлова </td><td>5690</td><td>7</td><td>66</td></tr>
-<tr><td>24</td><td class="name">Маргарита Дж (-1 отговор)</td><td>5380</td><td>6</td><td>65</td></tr>
-<tr><td>25</td><td class="name">Деница Динева </td><td>5270</td><td>6</td><td>64</td></tr>
-<tr><td>26</td><td class="name">Петър Генчев </td><td>5240</td><td>7</td><td>63</td></tr>
-<tr><td>27</td><td class="name">Антон Щерев (-3 отговора)</td><td>5200</td><td>0</td><td>62</td></tr>
-<tr><td>28</td><td class="name">Добромир Добромиров</td><td>5180</td><td>6</td><td>61</td></tr>
-<tr><td>29</td><td class="name">Краси Вуков </td><td>5050</td><td>6</td><td>60</td></tr>
-<tr><td>30</td><td class="name">Галя Лалева</td><td>4720</td><td>6</td><td>59</td></tr>
-<tr><td>31</td><td class="name">Севдалина Тодорова</td><td>4660</td><td>6</td><td>58</td></tr>
-<tr><td>32</td><td class="name">Кирил Младенов</td><td>4470</td><td>5</td><td>57</td></tr>
-<tr><td>33</td><td class="name">Станимир Генев (- 1 отговора)</td><td>4390</td><td>5</td><td>56</td></tr>
-<tr><td>34</td><td class="name">Григор Григоров (-1 отговор)</td><td>4360</td><td>5</td><td>55</td></tr>
-<tr><td>35</td><td class="name">Ели Георгиева </td><td>4180</td><td>5</td><td>54</td></tr>
-<tr><td>36</td><td class="name">Петър Цурев </td><td>3870</td><td>5</td><td>53</td></tr>
-<tr><td>37</td><td class="name">Веселин Младенов (-1 отговор)</td><td>3540</td><td>4</td><td>52</td></tr>
-<tr><td>38</td><td class="name">Наско Станимиров (-2 отговора)</td><td>3470</td><td>4</td><td>51</td></tr>
-<tr><td>39</td><td class="name">Жанет (-3 отговора)</td><td>3420</td><td>4</td><td>50</td></tr>
-<tr><td>40</td><td class="name">Акси </td><td>3270</td><td>0</td><td>49</td></tr>
-<tr><td>41</td><td class="name">Мария Чулова (-3 отговора)</td><td>3270</td><td>4</td><td>48</td></tr>
-<tr><td>42</td><td class="name">Димитър Шопов (-7 отговора)</td><td>1260</td><td>2</td><td>47</td></tr>
-<tr><td>43</td><td class="name">333 ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>44</td><td class="name">Анка Ганчева</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>45</td><td class="name">Атанас Атанасов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>46</td><td class="name">Атанас Желязков</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>47</td><td class="name">Бисер Стан</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>48</td><td class="name">Валентина Псалтирова</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>49</td><td class="name">Ваня (-3 отговора)</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>50</td><td class="name">Виктор Видинов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>51</td><td class="name">Виктория </td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>52</td><td class="name">Вихрен</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>53</td><td class="name">Галин (- 1 отговор)</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>54</td><td class="name">Гено Петров</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>55</td><td class="name">Георги Симеонов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>56</td><td class="name">Гергана</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>57</td><td class="name">Дани Георгиев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>58</td><td class="name">Даниел Иванов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>59</td><td class="name">Даниела Кънева</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>60</td><td class="name">Данчо ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>61</td><td class="name">Денис Олегов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>62</td><td class="name">Деси ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>63</td><td class="name">Десо Тенев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>64</td><td class="name">Деян Станев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>65</td><td class="name">Джон Марк</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>66</td><td class="name">Диана ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>67</td><td class="name">Диана Блажева</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>68</td><td class="name">Динко Давидов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>69</td><td class="name">Здравко Гюров</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>70</td><td class="name">Иван М ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>71</td><td class="name">Иван Пеев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>72</td><td class="name">Иван Цочев (-2 отговора)</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>73</td><td class="name">Иво ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>74</td><td class="name">Иво Дуков </td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>75</td><td class="name">Илия Арсенов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>76</td><td class="name">Ицо ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>77</td><td class="name">Йордан Григоров</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>78</td><td class="name">Йордан Пенчев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>79</td><td class="name">Катерина  Бейчева (-3 отговора)</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>80</td><td class="name">Кирил Бейдов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>81</td><td class="name">Кирил Веселинов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>82</td><td class="name">Клеми ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>83</td><td class="name">Коло ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>84</td><td class="name">Краси ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>85</td><td class="name">Краси Велчев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>86</td><td class="name">Краси Христозов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>87</td><td class="name">Красимир Александров</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>88</td><td class="name">Людмил</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>89</td><td class="name">МаКолева</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>90</td><td class="name">Максим</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>91</td><td class="name">Мариела</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>92</td><td class="name">Мариос</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>93</td><td class="name">Мария ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>94</td><td class="name">Меги</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>95</td><td class="name">Микену ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>96</td><td class="name">Мирела</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>97</td><td class="name">Павел Алексиев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>98</td><td class="name">Павел Йорданов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>99</td><td class="name">Петър Радев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>100</td><td class="name">Радослав Чакъров</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>101</td><td class="name">Спас Пейчев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>102</td><td class="name">Станимир Баев</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>103</td><td class="name">Стела</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>104</td><td class="name">Стефан Иванов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>105</td><td class="name">Стоил</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>106</td><td class="name">Тодор Абаджиев </td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>107</td><td class="name">Христо ???</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>108</td><td class="name">Христо Атанасов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>109</td><td class="name">Цветелин Цонков</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>110</td><td class="name">Юлиян Иванов</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>110</td><td class="name">Ясен</td><td>0</td><td>0</td><td>0</td></tr>
-</table>
+<nav class="main-nav">
+    <a href="/index.html">Начало</a>
+    <a href="#">Събития</a>
+    <a href="#">Куиз играчи</a>
+    <a href="#">Отбори</a>
+    <a href="#">Нац. отбор</a>
+    <a href="/results/2025-11-30.html">Класирания</a>
+    <a href="/video/index.html">Мултимедия</a>
+    <a href="#">Отиди на куиз</a>
+    <a href="/igri/index.html">Игри на Знания</a>
+    <a href="#">Асоциация</a>
+</nav>
+
+<div id="logo-popup">
+    <img src="emblema.png" alt="Голямо лого">
+</div>
+
+<script>
+const logo = document.querySelector('.logo');
+const popup = document.getElementById('logo-popup');
+logo.onclick = () => popup.style.display = 'flex';
+popup.onclick = () => popup.style.display = 'none';
+</script>
+
+<!-- ===== ПАРТНЬОРИ – НАПЪЛНО ЗАПАЗЕНИ ===== -->
+<div class="partners-wrapper">
+    <div class="partners-title">Нашите партньори</div>
+
+    <div class="partners-grid">
+
+       <div class="partner-cell">
+            <div class="partner-box"><img src="toto.png" alt="Български спортен тотализатор"></div>
+            <div class="partner-name"><a href="https://toto.bg" target="_blank" rel="noopener">Български спортен тотализатор</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="posledniat_pecheli.png" alt="Последният печели (ТВ игра)"></div>
+            <div class="partner-name"><a href="https://bnt.bg/news/posledniyat-pecheli-281378news.html" target="_blank" rel="noopener">Последният печели</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="stani_bogat.png" alt="Стани богат (ТВ игра)"></div>
+            <div class="partner-name"><a href="https://btvplus.bg/produkt/predavaniya/67912/stani-bogat/sezon-4" target="_blank" rel="noopener">Стани богат</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="minuta.png" alt="Минута е много (ТВ игра)"></div>
+            <div class="partner-name"><a href="http://www.minutaemnogo.tv/" target="_blank" rel="noopener">Минута е много</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="igri_na_znania.png" alt="Игри на Знания (група)"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/791002883500846/" target="_blank" rel="noopener">Игри на Знания</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="bg_kuiz_liga.png" alt="Българска куиз лига"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/170785244940606" target="_blank" rel="noopener">Българска куиз лига</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="zagadkite.png" alt="Загадките на Атанас Атанасов"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/ZagadkiAA/?locale=bg_BG" target="_blank" rel="noopener">Загадките на Атанас Атанасов</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="posledniat1.png" alt="Последният печели (група 1)"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/959830148105568?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 1</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="posledniat2.png" alt="Последният печели (група 2)"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/325290716277553?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 2</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="parnetrs/geograf.png" alt="Географ БГ"></div>
+            <div class="partner-name"><a href="https://geograf.bg/bg" target="_blank" rel="noopener">Географ БГ</a></div>
+        </div>
+
+        <div class="partner-cell">
+            <div class="partner-box"><img src="partners/level_up.png" alt="Level Up"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/LevelUpOpera/?locale=bg_BG" target="_blank" rel="noopener">Бар Level Up</a></div>
+        </div>
+
+
+    </div>
+</div>
+
 </body>
 </html>
-
-
-
-
-
-
