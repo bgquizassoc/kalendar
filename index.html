@@ -208,6 +208,227 @@ nav.main-nav a:hover {
     <a href="/igri/index.html">Игри на Знания</a>
     <a href="#">Асоциация</a>
 </nav>
+<!-- ===== КАЛЕНДАР ЗА ИЗБОР НА КОНФИГУРАТОР ===== -->
+<div class="calendar-wrapper">
+    <h2 class="calendar-title">
+        Избери си една дата и стани куиз конфигуратор<br>
+        <span class="calendar-sub">Настрой параметрите по куиза така, както ти харесва</span>
+    </h2>
+
+    <div id="calendarMay" class="calendar-grid">
+        <!-- 31 клетки за месец май -->
+        <div class="day-cell" data-day="1">1</div>
+        <div class="day-cell" data-day="2">2</div>
+        <div class="day-cell" data-day="3">3</div>
+        <div class="day-cell" data-day="4">4</div>
+        <div class="day-cell" data-day="5">5</div>
+        <div class="day-cell" data-day="6">6</div>
+        <div class="day-cell" data-day="7">7</div>
+        <div class="day-cell" data-day="8">8</div>
+        <div class="day-cell" data-day="9">9</div>
+        <div class="day-cell" data-day="10">10</div>
+        <div class="day-cell" data-day="11">11</div>
+        <div class="day-cell" data-day="12">12</div>
+        <div class="day-cell" data-day="13">13</div>
+        <div class="day-cell" data-day="14">14</div>
+        <div class="day-cell" data-day="15">15</div>
+        <div class="day-cell" data-day="16">16</div>
+        <div class="day-cell" data-day="17">17</div>
+        <div class="day-cell" data-day="18">18</div>
+        <div class="day-cell" data-day="19">19</div>
+        <div class="day-cell" data-day="20">20</div>
+        <div class="day-cell" data-day="21">21</div>
+        <div class="day-cell" data-day="22">22</div>
+        <div class="day-cell" data-day="23">23</div>
+        <div class="day-cell" data-day="24">24</div>
+        <div class="day-cell" data-day="25">25</div>
+        <div class="day-cell" data-day="26">26</div>
+        <div class="day-cell" data-day="27">27</div>
+        <div class="day-cell" data-day="28">28</div>
+        <div class="day-cell" data-day="29">29</div>
+        <div class="day-cell" data-day="30">30</div>
+        <div class="day-cell" data-day="31">31</div>
+    </div>
+</div>
+
+<style>
+/* ===== КАЛЕНДАР СТИЛ ===== */
+.calendar-wrapper {
+    width: 100%;
+    padding: 40px 20px;
+    background-color: #00264d;
+    border-top: 2px solid #00509e;
+    border-bottom: 2px solid #00509e;
+    margin-top: 30px;
+}
+
+.calendar-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffcc00;
+    margin-bottom: 25px;
+}
+
+.calendar-sub {
+    font-size: 18px;
+    color: #ffffff;
+    opacity: 0.85;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.day-cell {
+    background-color: #003d7a;
+    border: 2px solid #00509e;
+    padding: 18px 0;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.day-cell:hover {
+    background-color: #004a9f;
+    transform: scale(1.05);
+}
+
+/* свободна дата */
+.day-free {
+    background-color: #006600 !important;
+    border-color: #00aa00 !important;
+}
+
+/* заета дата */
+.day-taken {
+    background-color: #990000 !important;
+    border-color: #cc0000 !important;
+}
+
+/* избрана от играча */
+.day-mine {
+    background-color: #ff66cc !important;
+    border-color: #ff99dd !important;
+}
+
+/* responsive */
+@media (max-width: 700px) {
+    .calendar-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 420px) {
+    .calendar-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+</style>
+<script>
+// ====== ТВОИТЕ PLAYERS ======
+/* players.js трябва да е зареден преди този файл */
+
+// ====== FIRESTORE РЕФЕРЕНЦИИ ======
+const db = firebase.firestore();
+
+// ====== ВЗИМАМЕ ИГРАЧА ОТ ID КОД ======
+let playerId = localStorage.getItem("playerId") || null;
+let playerName = localStorage.getItem("playerName") || null;
+
+// Ако няма ID → искаме го
+if (!playerId || !PLAYERS[playerId]) {
+    playerId = prompt("Въведи своя ID код:");
+    if (!PLAYERS[playerId]) {
+        alert("Невалиден ID код.");
+        location.reload();
+    }
+    playerName = PLAYERS[playerId];
+    localStorage.setItem("playerId", playerId);
+    localStorage.setItem("playerName", playerName);
+}
+
+// ====== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ======
+const calendarRef = collection(db, "calendar", "may", "days");
+
+function loadCalendar() {
+    onSnapshot(calendarRef, snap => {
+        snap.forEach(doc => {
+            const day = doc.id;
+            const data = doc.data();
+            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
+
+            if (!cell) return;
+
+            cell.classList.remove("day-free", "day-taken", "day-mine");
+
+            if (!data.takenBy) {
+                cell.classList.add("day-free");
+                cell.textContent = day;
+            } else {
+                if (data.uid === playerId) {
+                    cell.classList.add("day-mine");
+                    cell.textContent = `${day} — Ти`;
+                } else {
+                    cell.classList.add("day-taken");
+                    cell.textContent = `${day} — ${data.takenBy}`;
+                }
+            }
+        });
+    });
+}
+
+loadCalendar();
+
+// ====== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ======
+async function playerAlreadyHasDate() {
+    const snap = await getDocs(calendarRef);
+    let found = false;
+
+    snap.forEach(doc => {
+        const data = doc.data();
+        if (data.uid === playerId) found = true;
+    });
+
+    return found;
+}
+
+// ====== ИЗБОР НА ДАТА ======
+document.querySelectorAll(".day-cell").forEach(cell => {
+    cell.onclick = async () => {
+        const day = cell.dataset.day;
+
+        const docRef = doc(db, "calendar", "may", "days", day);
+        const docSnap = await getDoc(docRef);
+
+        // Ако е заета → стоп
+        if (docSnap.exists() && docSnap.data().takenBy) {
+            alert("Тази дата вече е заета.");
+            return;
+        }
+
+        // Ако играчът вече има дата → стоп
+        if (await playerAlreadyHasDate()) {
+            alert("Можеш да избереш само една дата.");
+            return;
+        }
+
+        // Записваме
+        await setDoc(docRef, {
+            takenBy: playerName,
+            uid: playerId,
+            timestamp: Date.now()
+        });
+
+        alert("Успешно избра дата!");
+    };
+});
+</script>
 
 <div id="logo-popup">
     <img src="/partners/emblema.png" alt="Голямо лого">
