@@ -208,6 +208,59 @@ nav.main-nav a:hover {
     <a href="/igri/index.html">Игри на Знания</a>
     <a href="#">Асоциация</a>
 </nav>
+
+<!-- ===== FIREBASE SDK + AUTH ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { 
+    getFirestore, 
+    doc, 
+    setDoc,
+    getDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+  import { 
+    getAuth,
+    signInAnonymously
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
+    authDomain: "cifromania-ac182.firebaseapp.com",
+    projectId: "cifromania-ac182",
+    storageBucket: "cifromania-ac182.appspot.com",
+    messagingSenderId: "165208255580",
+    appId: "1:165208255580:web:b36744f0eb527b6571129"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Анонимен Firebase Auth (задължително за Firestore rules)
+  signInAnonymously(auth)
+    .then(() => console.log("Signed in anonymously"))
+    .catch(err => console.error("Auth error:", err));
+
+  // Правим Firestore достъпен за следващия скрипт
+  window.db = db;
+  window.doc = doc;
+  window.setDoc = setDoc;
+  window.getDoc = getDoc;
+  window.collection = collection;
+  window.query = query;
+  window.where = where;
+  window.orderBy = orderBy;
+  window.limit = limit;
+  window.onSnapshot = onSnapshot;
+</script>
+
 <!-- ===== КАЛЕНДАР ЗА ИЗБОР НА КОНФИГУРАТОР ===== -->
 <div class="calendar-wrapper">
     <h2 class="calendar-title">
@@ -216,7 +269,6 @@ nav.main-nav a:hover {
     </h2>
 
     <div id="calendarMay" class="calendar-grid">
-        <!-- 31 клетки за месец май -->
         <div class="day-cell" data-day="1">1</div>
         <div class="day-cell" data-day="2">2</div>
         <div class="day-cell" data-day="3">3</div>
@@ -250,7 +302,6 @@ nav.main-nav a:hover {
         <div class="day-cell" data-day="31">31</div>
     </div>
 </div>
-
 <style>
 /* ===== КАЛЕНДАР СТИЛ ===== */
 .calendar-wrapper {
@@ -330,18 +381,16 @@ nav.main-nav a:hover {
     }
 }
 </style>
-<script>
-// ====== ТВОИТЕ PLAYERS ======
-/* players.js трябва да е зареден преди този файл */
 
-// ====== FIRESTORE РЕФЕРЕНЦИИ ======
-const db = firebase.firestore();
+<script>
+// ====== FIRESTORE РЕФЕРЕНЦИИ (от Firebase SDK) ======
+const db = window.db;
+const { doc, setDoc, getDoc, collection, onSnapshot, getDocs } = window;
 
 // ====== ВЗИМАМЕ ИГРАЧА ОТ ID КОД ======
 let playerId = localStorage.getItem("playerId") || null;
 let playerName = localStorage.getItem("playerName") || null;
 
-// Ако няма ID → искаме го
 if (!playerId || !PLAYERS[playerId]) {
     playerId = prompt("Въведи своя ID код:");
     if (!PLAYERS[playerId]) {
@@ -358,9 +407,9 @@ const calendarRef = collection(db, "calendar", "may", "days");
 
 function loadCalendar() {
     onSnapshot(calendarRef, snap => {
-        snap.forEach(doc => {
-            const day = doc.id;
-            const data = doc.data();
+        snap.forEach(docSnap => {
+            const day = docSnap.id;
+            const data = docSnap.data();
             const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
 
             if (!cell) return;
@@ -390,8 +439,8 @@ async function playerAlreadyHasDate() {
     const snap = await getDocs(calendarRef);
     let found = false;
 
-    snap.forEach(doc => {
-        const data = doc.data();
+    snap.forEach(docSnap => {
+        const data = docSnap.data();
         if (data.uid === playerId) found = true;
     });
 
@@ -406,19 +455,16 @@ document.querySelectorAll(".day-cell").forEach(cell => {
         const docRef = doc(db, "calendar", "may", "days", day);
         const docSnap = await getDoc(docRef);
 
-        // Ако е заета → стоп
         if (docSnap.exists() && docSnap.data().takenBy) {
             alert("Тази дата вече е заета.");
             return;
         }
 
-        // Ако играчът вече има дата → стоп
         if (await playerAlreadyHasDate()) {
             alert("Можеш да избереш само една дата.");
             return;
         }
 
-        // Записваме
         await setDoc(docRef, {
             takenBy: playerName,
             uid: playerId,
@@ -459,7 +505,7 @@ popup.onclick = () => popup.style.display = 'none';
 
         <div class="partner-cell">
             <div class="partner-box"><img src="/partners/stani_bogat.png" alt="Стани богат (ТВ игра)"></div>
-            <div class="partner-name"><a href="https://btvplus.bg/produkt/predavaniya/67912/stani-bogat/sezon-4" target="_blank" rel="noopener">Стани богат</a></div>
+            <div class="partner-name"><a href="https://btvplus.bg/produkt/pредавания/67912/stani-bogat/sezon-4" target="_blank" rel="noopener">Стани богат</a></div>
         </div>
 
         <div class="partner-cell">
@@ -502,12 +548,8 @@ popup.onclick = () => popup.style.display = 'none';
             <div class="partner-name"><a href="https://www.facebook.com/LevelUpOpera/?locale=bg_BG" target="_blank" rel="noopener">Бар Level Up</a></div>
         </div>
 
-
     </div>
 </div>
 
 </body>
 </html>
-
-
-
