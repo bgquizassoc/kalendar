@@ -209,10 +209,15 @@ nav.main-nav a:hover {
     <a href="#">Асоциация</a>
 </nav>
 
-<!-- ===== FIREBASE SDK + AUTH ===== -->
+<!-- ===== ЗАРЕЖДАМЕ PLAYERS.js ПЪРВО ===== -->
+<script src="players.js"></script>
+
+<!-- ===== FIREBASE + КАЛЕНДАР (ВСИЧКО В ЕДИН MODULE SCRIPT) ===== -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { 
+
+/* ===== FIREBASE SDK ===== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { 
     getFirestore, 
     doc, 
     setDoc,
@@ -220,43 +225,124 @@ nav.main-nav a:hover {
     getDocs,
     collection,
     onSnapshot
-  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-  import { 
+import { 
     getAuth,
     signInAnonymously
-  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-  const firebaseConfig = {
+/* ===== FIREBASE CONFIG ===== */
+const firebaseConfig = {
     apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
     authDomain: "cifromania-ac182.firebaseapp.com",
     projectId: "cifromania-ac182",
     storageBucket: "cifromania-ac182.appspot.com",
     messagingSenderId: "165208255580",
     appId: "1:165208255580:web:b36744f0eb527b6571129"
-  };
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-  signInAnonymously(auth)
+/* ===== АНОНИМЕН AUTH ===== */
+signInAnonymously(auth)
     .then(() => console.log("Signed in anonymously"))
     .catch(err => console.error("Auth error:", err));
 
-  window.db = db;
-  window.doc = doc;
-  window.setDoc = setDoc;
-  window.getDoc = getDoc;
-  window.getDocs = getDocs;
-  window.collection = collection;
-  window.onSnapshot = onSnapshot;
+/* ===== КАЛЕНДАР ===== */
+const calendarRef = collection(db, "calendar", "may", "days");
+
+/* ===== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ===== */
+function loadCalendar() {
+    onSnapshot(calendarRef, snap => {
+        snap.forEach(docSnap => {
+            const day = docSnap.id;
+            const data = docSnap.data();
+            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
+
+            if (!cell) return;
+
+            cell.classList.remove("day-free", "day-taken", "day-mine");
+
+            if (!data.takenBy) {
+                cell.classList.add("day-free");
+                cell.textContent = day;
+            } else {
+                const savedId = localStorage.getItem("playerId");
+                if (data.uid === savedId) {
+                    cell.classList.add("day-mine");
+                    cell.textContent = `${day} — Ти`;
+                } else {
+                    cell.classList.add("day-taken");
+                    cell.textContent = `${day} — ${data.takenBy}`;
+                }
+            }
+        });
+    });
+}
+
+loadCalendar();
+
+/* ===== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ===== */
+async function playerAlreadyHasDate(playerId) {
+    const snap = await getDocs(calendarRef);
+    let found = false;
+
+    snap.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.uid === playerId) found = true;
+    });
+
+    return found;
+}
+
+/* ===== ИЗБОР НА ДАТА ===== */
+document.querySelectorAll(".day-cell").forEach(cell => {
+    cell.onclick = async () => {
+
+        let playerId = localStorage.getItem("playerId");
+        let playerName = localStorage.getItem("playerName");
+
+        if (!playerId || !PLAYERS[playerId]) {
+            playerId = prompt("Въведи своя ID код:");
+            if (!PLAYERS[playerId]) {
+                alert("Невалиден ID код.");
+                return;
+            }
+            playerName = PLAYERS[playerId];
+            localStorage.setItem("playerId", playerId);
+            localStorage.setItem("playerName", playerName);
+        }
+
+        const day = cell.dataset.day;
+        const docRef = doc(db, "calendar", "may", "days", day);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists() && docSnap.data().takenBy) {
+            alert("Тази дата вече е заета.");
+            return;
+        }
+
+        if (await playerAlreadyHasDate(playerId)) {
+            alert("Можеш да избереш само една дата.");
+            return;
+        }
+
+        await setDoc(docRef, {
+            takenBy: playerName,
+            uid: playerId,
+            timestamp: Date.now()
+        });
+
+        alert("Успешно избра дата!");
+    };
+});
+
 </script>
 
-<!-- ===== ЗАРЕЖДАМЕ PLAYERS.js ===== -->
-<script src="players.js"></script>
-
-<!-- ===== КАЛЕНДАР ЗА ИЗБОР НА КОНФИГУРАТОР ===== -->
+<!-- ===== КАЛЕНДАР HTML ===== -->
 <div class="calendar-wrapper">
     <h2 class="calendar-title">
         Избери си една дата и стани куиз конфигуратор<br>
@@ -298,192 +384,7 @@ nav.main-nav a:hover {
     </div>
 </div>
 
-<style>
-/* ===== КАЛЕНДАР СТИЛ ===== */
-.calendar-wrapper {
-    width: 100%;
-    padding: 40px 20px;
-    background-color: #00264d;
-    border-top: 2px solid #00509e;
-    border-bottom: 2px solid #00509e;
-    margin-top: 30px;
-}
-
-.calendar-title {
-    font-size: 32px;
-    font-weight: bold;
-    color: #ffcc00;
-    margin-bottom: 25px;
-}
-
-.calendar-sub {
-    font-size: 18px;
-    color: #ffffff;
-    opacity: 0.85;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.day-cell {
-    background-color: #003d7a;
-    border: 2px solid #00509e;
-    padding: 18px 0;
-    font-size: 22px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.day-cell:hover {
-    background-color: #004a9f;
-    transform: scale(1.05);
-}
-
-/* свободна дата */
-.day-free {
-    background-color: #006600 !important;
-    border-color: #00aa00 !important;
-}
-
-/* заета дата */
-.day-taken {
-    background-color: #990000 !important;
-    border-color: #cc0000 !important;
-}
-
-/* избрана от играча */
-.day-mine {
-    background-color: #ff66cc !important;
-    border-color: #ff99dd !important;
-}
-
-/* responsive */
-@media (max-width: 700px) {
-    .calendar-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 420px) {
-    .calendar-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-</style>
-
-<script>
-// ====== FIRESTORE РЕФЕРЕНЦИИ ======
-const db = window.db;
-const { doc, setDoc, getDoc, getDocs, collection, onSnapshot } = window;
-
-// ====== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ======
-const calendarRef = collection(db, "calendar", "may", "days");
-
-function loadCalendar() {
-    onSnapshot(calendarRef, snap => {
-        snap.forEach(docSnap => {
-            const day = docSnap.id;
-            const data = docSnap.data();
-            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
-
-            if (!cell) return;
-
-            cell.classList.remove("day-free", "day-taken", "day-mine");
-
-            if (!data.takenBy) {
-                cell.classList.add("day-free");
-                cell.textContent = day;
-            } else {
-                if (data.uid === localStorage.getItem("playerId")) {
-                    cell.classList.add("day-mine");
-                    cell.textContent = `${day} — Ти`;
-                } else {
-                    cell.classList.add("day-taken");
-                    cell.textContent = `${day} — ${data.takenBy}`;
-                }
-            }
-        });
-    });
-}
-
-loadCalendar();
-
-// ====== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ======
-async function playerAlreadyHasDate(playerId) {
-    const snap = await getDocs(calendarRef);
-    let found = false;
-
-    snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data.uid === playerId) found = true;
-    });
-
-    return found;
-}
-
-// ====== ИЗБОР НА ДАТА ======
-document.querySelectorAll(".day-cell").forEach(cell => {
-    cell.onclick = async () => {
-
-        // ПИТАМЕ ЗА ID САМО ПРИ КЛИК
-        let playerId = localStorage.getItem("playerId");
-        let playerName = localStorage.getItem("playerName");
-
-        if (!playerId || !PLAYERS[playerId]) {
-            playerId = prompt("Въведи своя ID код:");
-            if (!PLAYERS[playerId]) {
-                alert("Невалиден ID код.");
-                return;
-            }
-            playerName = PLAYERS[playerId];
-            localStorage.setItem("playerId", playerId);
-            localStorage.setItem("playerName", playerName);
-        }
-
-        const day = cell.dataset.day;
-        const docRef = doc(db, "calendar", "may", "days", day);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists() && docSnap.data().takenBy) {
-            alert("Тази дата вече е заета.");
-            return;
-        }
-
-        if (await playerAlreadyHasDate(playerId)) {
-            alert("Можеш да избереш само една дата.");
-            return;
-        }
-
-        await setDoc(docRef, {
-            takenBy: playerName,
-            uid: playerId,
-            timestamp: Date.now()
-        });
-
-        alert("Успешно избра дата!");
-    };
-});
-</script>
-
-<div id="logo-popup">
-    <img src="/partners/emblema.png" alt="Голямо лого">
-</div>
-
-<script>
-const logo = document.querySelector('.logo');
-const popup = document.getElementById('logo-popup');
-logo.onclick = () => popup.style.display = 'flex';
-popup.onclick = () => popup.style.display = 'none';
-</script>
-
-<!-- ===== ПАРТНЬОРИ – НАПЪЛНО ЗАПАЗЕНИ ===== -->
+  <!-- ===== ПАРТНЬОРИ – НАПЪЛНО ЗАПАЗЕНИ ===== -->
 <div class="partners-wrapper">
     <div class="partners-title">Нашите партньори</div>
 
