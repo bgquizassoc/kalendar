@@ -88,22 +88,6 @@ nav.main-nav a:hover {
     transform: scale(1.05);
 }
 
-/* ===== LOGO POPUP ===== */
-#logo-popup {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-#logo-popup img {
-    max-width: 90%;
-    max-height: 90%;
-}
-
 /* ===== PARTNERS ===== */
 .partners-wrapper {
     width: 100%;
@@ -193,154 +177,21 @@ nav.main-nav a:hover {
         БЪЛГАРСКА НАЦИОНАЛНА<br>
         КУИЗ АСОЦИАЦИЯ
     </div>
-    <img src="/partners/emblema.png" alt="Лого" class="logo">
+    <img src="./partners/emblema.png" alt="Лого" class="logo">
 </header>
 
 <nav class="main-nav">
-    <a href="/index.html">Начало</a>
+    <a href="../index.html">Начало</a>
     <a href="#">Събития</a>
     <a href="#">Куиз играчи</a>
     <a href="#">Отбори</a>
     <a href="#">Нац. отбор</a>
     <a href="#">Класирания</a>
-    <a href="/video/index.html">Мултимедия</a>
+    <a href="../video/index.html">Мултимедия</a>
     <a href="#">Отиди на куиз</a>
-    <a href="/igri/index.html">Игри на Знания</a>
+    <a href="../igri/index.html">Игри на Знания</a>
     <a href="#">Асоциация</a>
 </nav>
-
-<!-- ===== ЗАРЕЖДАМЕ PLAYERS.js ПЪРВО ===== -->
-<script src="./players.js"></script>
-
-<!-- ===== FIREBASE + КАЛЕНДАР (ВСИЧКО В ЕДИН MODULE SCRIPT) ===== -->
-<script type="module">
-
-/* ===== FIREBASE SDK ===== */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { 
-    getFirestore, 
-    doc, 
-    setDoc,
-    getDoc,
-    getDocs,
-    collection,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
-import { 
-    getAuth,
-    signInAnonymously
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-
-/* ===== FIREBASE CONFIG ===== */
-const firebaseConfig = {
-    apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
-    authDomain: "cifromania-ac182.firebaseapp.com",
-    projectId: "cifromania-ac182",
-    storageBucket: "cifromania-ac182.appspot.com",
-    messagingSenderId: "165208255580",
-    appId: "1:165208255580:web:b36744f0eb527b6571129"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* ===== АНОНИМЕН AUTH ===== */
-signInAnonymously(auth)
-    .then(() => console.log("Signed in anonymously"))
-    .catch(err => console.error("Auth error:", err));
-
-/* ===== КАЛЕНДАР ===== */
-const calendarRef = collection(db, "calendar", "may", "days");
-
-/* ===== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ===== */
-function loadCalendar() {
-    onSnapshot(calendarRef, snap => {
-        snap.forEach(docSnap => {
-            const day = docSnap.id;
-            const data = docSnap.data();
-            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
-
-            if (!cell) return;
-
-            cell.classList.remove("day-free", "day-taken", "day-mine");
-
-            if (!data.takenBy) {
-                cell.classList.add("day-free");
-                cell.textContent = day;
-            } else {
-                const savedId = localStorage.getItem("playerId");
-                if (data.uid === savedId) {
-                    cell.classList.add("day-mine");
-                    cell.textContent = `${day} — Ти`;
-                } else {
-                    cell.classList.add("day-taken");
-                    cell.textContent = `${day} — ${data.takenBy}`;
-                }
-            }
-        });
-    });
-}
-
-loadCalendar();
-
-/* ===== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ===== */
-async function playerAlreadyHasDate(playerId) {
-    const snap = await getDocs(calendarRef);
-    let found = false;
-
-    snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data.uid === playerId) found = true;
-    });
-
-    return found;
-}
-
-/* ===== ИЗБОР НА ДАТА ===== */
-document.querySelectorAll(".day-cell").forEach(cell => {
-    cell.onclick = async () => {
-
-        let playerId = localStorage.getItem("playerId");
-        let playerName = localStorage.getItem("playerName");
-
-        if (!playerId || !PLAYERS[playerId]) {
-            playerId = prompt("Въведи своя ID код:");
-            if (!PLAYERS[playerId]) {
-                alert("Невалиден ID код.");
-                return;
-            }
-            playerName = PLAYERS[playerId];
-            localStorage.setItem("playerId", playerId);
-            localStorage.setItem("playerName", playerName);
-        }
-
-        const day = cell.dataset.day;
-        const docRef = doc(db, "calendar", "may", "days", day);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists() && docSnap.data().takenBy) {
-            alert("Тази дата вече е заета.");
-            return;
-        }
-
-        if (await playerAlreadyHasDate(playerId)) {
-            alert("Можеш да избереш само една дата.");
-            return;
-        }
-
-        await setDoc(docRef, {
-            takenBy: playerName,
-            uid: playerId,
-            timestamp: Date.now()
-        });
-
-        alert("Успешно избра дата!");
-    };
-});
-
-</script>
 
 <!-- ===== КАЛЕНДАР HTML ===== -->
 <div class="calendar-wrapper">
@@ -384,69 +235,73 @@ document.querySelectorAll(".day-cell").forEach(cell => {
     </div>
 </div>
 
-  <!-- ===== ПАРТНЬОРИ – НАПЪЛНО ЗАПАЗЕНИ ===== -->
+<!-- ===== ПАРТНЬОРИ ===== -->
 <div class="partners-wrapper">
     <div class="partners-title">Нашите партньори</div>
 
     <div class="partners-grid">
 
        <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/toto.png" alt="Български спортен тотализатор"></div>
-            <div class="partner-name"><a href="https://toto.bg" target="_blank" rel="noopener">Български спортен тотализатор</a></div>
+            <div class="partner-box"><img src="./partners/toto.png"></div>
+            <div class="partner-name"><a href="https://toto.bg" target="_blank">Български спортен тотализатор</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat_pecheli.png" alt="Последният печели (ТВ игра)"></div>
-            <div class="partner-name"><a href="https://bnt.bg/news/posledniyat-pecheli-281378news.html" target="_blank" rel="noopener">Последният печели</a></div>
+            <div class="partner-box"><img src="./partners/posledniat_pecheli.png"></div>
+            <div class="partner-name"><a href="https://bnt.bg/news/posledniyat-pecheli-281378news.html" target="_blank">Последният печели</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/stani_bogat.png" alt="Стани богат (ТВ игра)"></div>
-            <div class="partner-name"><a href="https://btvplus.bg/produkt/pредавания/67912/stani-bogat/sezon-4" target="_blank" rel="noopener">Стани богат</a></div>
+            <div class="partner-box"><img src="./partners/stani_bogat.png"></div>
+            <div class="partner-name"><a href="https://btvplus.bg" target="_blank">Стани богат</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/minuta.png" alt="Минута е много (ТВ игра)"></div>
-            <div class="partner-name"><a href="http://www.minutaemnogo.tv/" target="_blank" rel="noopener">Минута е много</a></div>
+            <div class="partner-box"><img src="./partners/minuta.png"></div>
+            <div class="partner-name"><a href="http://www.minutaemnogo.tv/" target="_blank">Минута е много</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/igri_na_znania.png" alt="Игри на Знания (група)"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/groups/791002883500846/" target="_blank" rel="noopener">Игри на Знания</a></div>
+            <div class="partner-box"><img src="./partners/igri_na_znania.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/791002883500846/" target="_blank">Игри на Знания</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/bg_kuiz_liga.png" alt="Българска куиз лига"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/groups/170785244940606" target="_blank" rel="noopener">Българска куиз лига</a></div>
+            <div class="partner-box"><img src="./partners/bg_kuiz_liga.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/170785244940606" target="_blank">Българска куиз лига</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/zagadkite.png" alt="Загадките на Атанас Атанасов"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/ZagadkiAA/?locale=bg_BG" target="_blank" rel="noopener">Загадките на Атанас Атанасов</a></div>
+            <div class="partner-box"><img src="./partners/zagadkite.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/ZagadkiAA/" target="_blank">Загадките на Атанас Атанасов</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat1.png" alt="Последният печели (група 1)"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/groups/959830148105568?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 1</a></div>
+            <div class="partner-box"><img src="./partners/posledniat1.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/959830148105568" target="_blank">Последният печели – група 1</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat2.png" alt="Последният печели (група 2)"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/groups/325290716277553?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 2</a></div>
+            <div class="partner-box"><img src="./partners/posledniat2.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/groups/325290716277553" target="_blank">Последният печели – група 2</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/geograf.png" alt="Географ БГ"></div>
-            <div class="partner-name"><a href="https://geograf.bg/bg" target="_blank" rel="noopener">Географ БГ</a></div>
+            <div class="partner-box"><img src="./partners/geograf.png"></div>
+            <div class="partner-name"><a href="https://geograf.bg/bg" target="_blank">Географ БГ</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/level_up.png" alt="Level Up"></div>
-            <div class="partner-name"><a href="https://www.facebook.com/LevelUpOpera/?locale=bg_BG" target="_blank" rel="noopener">Бар Level Up</a></div>
+            <div class="partner-box"><img src="./partners/level_up.png"></div>
+            <div class="partner-name"><a href="https://www.facebook.com/LevelUpOpera/" target="_blank">Бар Level Up</a></div>
         </div>
 
     </div>
 </div>
+
+<!-- ===== СКРИПТОВЕ НА ДЪНОТО ===== -->
+<script src="./players.js"></script>
+<script type="module" src="./calendar.js"></script>
 
 </body>
 </html>
