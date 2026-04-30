@@ -217,11 +217,8 @@ nav.main-nav a:hover {
     doc, 
     setDoc,
     getDoc,
+    getDocs,
     collection,
-    query,
-    where,
-    orderBy,
-    limit,
     onSnapshot
   } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -243,23 +240,21 @@ nav.main-nav a:hover {
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // Анонимен Firebase Auth (задължително за Firestore rules)
   signInAnonymously(auth)
     .then(() => console.log("Signed in anonymously"))
     .catch(err => console.error("Auth error:", err));
 
-  // Правим Firestore достъпен за следващия скрипт
   window.db = db;
   window.doc = doc;
   window.setDoc = setDoc;
   window.getDoc = getDoc;
+  window.getDocs = getDocs;
   window.collection = collection;
-  window.query = query;
-  window.where = where;
-  window.orderBy = orderBy;
-  window.limit = limit;
   window.onSnapshot = onSnapshot;
 </script>
+
+<!-- ===== ЗАРЕЖДАМЕ PLAYERS.js ===== -->
+<script src="players.js"></script>
 
 <!-- ===== КАЛЕНДАР ЗА ИЗБОР НА КОНФИГУРАТОР ===== -->
 <div class="calendar-wrapper">
@@ -302,6 +297,7 @@ nav.main-nav a:hover {
         <div class="day-cell" data-day="31">31</div>
     </div>
 </div>
+
 <style>
 /* ===== КАЛЕНДАР СТИЛ ===== */
 .calendar-wrapper {
@@ -383,24 +379,9 @@ nav.main-nav a:hover {
 </style>
 
 <script>
-// ====== FIRESTORE РЕФЕРЕНЦИИ (от Firebase SDK) ======
+// ====== FIRESTORE РЕФЕРЕНЦИИ ======
 const db = window.db;
-const { doc, setDoc, getDoc, collection, onSnapshot, getDocs } = window;
-
-// ====== ВЗИМАМЕ ИГРАЧА ОТ ID КОД ======
-let playerId = localStorage.getItem("playerId") || null;
-let playerName = localStorage.getItem("playerName") || null;
-
-if (!playerId || !PLAYERS[playerId]) {
-    playerId = prompt("Въведи своя ID код:");
-    if (!PLAYERS[playerId]) {
-        alert("Невалиден ID код.");
-        location.reload();
-    }
-    playerName = PLAYERS[playerId];
-    localStorage.setItem("playerId", playerId);
-    localStorage.setItem("playerName", playerName);
-}
+const { doc, setDoc, getDoc, getDocs, collection, onSnapshot } = window;
 
 // ====== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ======
 const calendarRef = collection(db, "calendar", "may", "days");
@@ -420,7 +401,7 @@ function loadCalendar() {
                 cell.classList.add("day-free");
                 cell.textContent = day;
             } else {
-                if (data.uid === playerId) {
+                if (data.uid === localStorage.getItem("playerId")) {
                     cell.classList.add("day-mine");
                     cell.textContent = `${day} — Ти`;
                 } else {
@@ -435,7 +416,7 @@ function loadCalendar() {
 loadCalendar();
 
 // ====== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ======
-async function playerAlreadyHasDate() {
+async function playerAlreadyHasDate(playerId) {
     const snap = await getDocs(calendarRef);
     let found = false;
 
@@ -450,8 +431,23 @@ async function playerAlreadyHasDate() {
 // ====== ИЗБОР НА ДАТА ======
 document.querySelectorAll(".day-cell").forEach(cell => {
     cell.onclick = async () => {
-        const day = cell.dataset.day;
 
+        // ПИТАМЕ ЗА ID САМО ПРИ КЛИК
+        let playerId = localStorage.getItem("playerId");
+        let playerName = localStorage.getItem("playerName");
+
+        if (!playerId || !PLAYERS[playerId]) {
+            playerId = prompt("Въведи своя ID код:");
+            if (!PLAYERS[playerId]) {
+                alert("Невалиден ID код.");
+                return;
+            }
+            playerName = PLAYERS[playerId];
+            localStorage.setItem("playerId", playerId);
+            localStorage.setItem("playerName", playerName);
+        }
+
+        const day = cell.dataset.day;
         const docRef = doc(db, "calendar", "may", "days", day);
         const docSnap = await getDoc(docRef);
 
@@ -460,7 +456,7 @@ document.querySelectorAll(".day-cell").forEach(cell => {
             return;
         }
 
-        if (await playerAlreadyHasDate()) {
+        if (await playerAlreadyHasDate(playerId)) {
             alert("Можеш да избереш само една дата.");
             return;
         }
