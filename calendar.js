@@ -34,7 +34,7 @@ signInAnonymously(auth)
     .then(() => console.log("Signed in anonymously"))
     .catch(err => console.error("Auth error:", err));
 
-/* ===== КАЛЕНДАР ===== */
+/* ===== КАЛЕНДАР КОЛЕКЦИЯ ===== */
 const calendarRef = collection(db, "calendar", "may", "days");
 
 /* ===== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ===== */
