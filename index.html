@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-
 <meta charset="UTF-8" />
 <title>Българска Национална Куиз Асоциация</title>
 
@@ -45,7 +44,6 @@ header {
     text-transform: uppercase;
     line-height: 1.05;
     text-align: left;
-
     background: linear-gradient(
         to bottom,
         #ffffff 0%,
@@ -88,12 +86,68 @@ nav.main-nav a:hover {
     transform: scale(1.05);
 }
 
+/* ===== CALENDAR ===== */
+.calendar-wrapper {
+    margin-top: 40px;
+}
+
+.calendar-title {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.calendar-sub {
+    font-size: 18px;
+    color: #ffcc00;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    max-width: 700px;
+    margin: 25px auto 0;
+}
+
+.day-cell {
+    background: #003d7a;
+    border: 2px solid #00509e;
+    padding: 18px 6px;
+    font-size: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.day-cell:hover {
+    background-color: #004a9f;
+}
+
+/* състояния */
+.day-free {
+    background-color: #003d7a;
+}
+
+.day-taken {
+    background-color: #8b0000;
+}
+
+.day-mine {
+    background-color: #009e3d;
+}
+
 /* ===== PARTNERS ===== */
 .partners-wrapper {
     width: 100%;
     border-top: 2px solid #00509e;
     margin-top: 40px;
     padding: 20px 20px 40px;
+    background-color: #00264d;
 }
 
 .partners-title {
@@ -235,7 +289,7 @@ nav.main-nav a:hover {
     </div>
 </div>
 
-<!-- ===== ПАРТНЬОРИ ===== -->
+  <!-- ===== ПАРТНЬОРИ ===== -->
 <div class="partners-wrapper">
     <div class="partners-title">Нашите партньори</div>
 
@@ -300,8 +354,8 @@ nav.main-nav a:hover {
 </div>
 
 <!-- ===== СКРИПТОВЕ НА ДЪНОТО ===== -->
-<script src="./players.js"></script>
-<script type="module" src="./calendar.js"></script>
+<script src="players.js"></script>
+<script type="module" src="calendar.js"></script>
 
 </body>
 </html>
