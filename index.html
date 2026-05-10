@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
+
 <meta charset="UTF-8" />
 <title>Българска Национална Куиз Асоциация</title>
 
@@ -105,40 +106,38 @@ nav.main-nav a:hover {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
-    max-width: 700px;
-    margin: 25px auto 0;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.weekday {
+    font-weight: bold;
+    color: #ffcc00;
+    padding: 10px 0;
+}
+
+.empty {
+    background: transparent;
+    border: none;
 }
 
 .day-cell {
     background: #003d7a;
     border: 2px solid #00509e;
-    padding: 18px 6px;
-    font-size: 20px;
+    padding: 10px;
+    font-size: 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: 0.2s;
-    min-height: 60px;
+    min-height: 90px;
     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: center;
     text-align: center;
-}
-
-.day-cell:hover {
-    background-color: #004a9f;
-}
-
-/* състояния */
-.day-free {
-    background-color: #003d7a;
-}
-
-.day-taken {
-    background-color: #8b0000;
-}
-
-.day-mine {
-    background-color: #009e3d;
+    line-height: 1.25;
+    color: white;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* ===== PARTNERS ===== */
@@ -206,21 +205,6 @@ nav.main-nav a:hover {
     text-decoration: underline;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1000px) {
-    .partners-grid { grid-template-columns: repeat(6, 1fr); }
-}
-
-@media (max-width: 700px) {
-    header { flex-direction: column; }
-    .title { font-size: 34px; text-align: center; }
-    .logo { height: 110px; }
-    .partners-grid { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (max-width: 420px) {
-    .partners-grid { grid-template-columns: repeat(2, 1fr); }
-}
 </style>
 </head>
 
@@ -247,7 +231,7 @@ nav.main-nav a:hover {
     <a href="#">Асоциация</a>
 </nav>
 
-<!-- ===== КАЛЕНДАР HTML ===== -->
+<!-- ===== КАЛЕНДАР ЗА МАЙ 2026 ===== -->
 <div class="calendar-wrapper">
     <h2 class="calendar-title">
         Избери си една дата и стани куиз конфигуратор<br>
@@ -255,6 +239,22 @@ nav.main-nav a:hover {
     </h2>
 
     <div id="calendarMay" class="calendar-grid">
+
+        <div class="weekday">Пн</div>
+        <div class="weekday">Вт</div>
+        <div class="weekday">Ср</div>
+        <div class="weekday">Чт</div>
+        <div class="weekday">Пт</div>
+        <div class="weekday">Сб</div>
+        <div class="weekday">Нд</div>
+
+        <!-- празни клетки до петък -->
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+
+        <!-- започваме от 1 май (петък) -->
         <div class="day-cell" data-day="1">1</div>
         <div class="day-cell" data-day="2">2</div>
         <div class="day-cell" data-day="3">3</div>
@@ -286,16 +286,16 @@ nav.main-nav a:hover {
         <div class="day-cell" data-day="29">29</div>
         <div class="day-cell" data-day="30">30</div>
         <div class="day-cell" data-day="31">31</div>
+
     </div>
 </div>
 
-  <!-- ===== ПАРТНЬОРИ ===== -->
+<!-- ===== ПАРТНЬОРИ ===== -->
 <div class="partners-wrapper">
     <div class="partners-title">Нашите партньори</div>
-
     <div class="partners-grid">
 
-       <div class="partner-cell">
+        <div class="partner-cell">
             <div class="partner-box"><img src="./partners/toto.png"></div>
             <div class="partner-name"><a href="https://toto.bg" target="_blank">Български спортен тотализатор</a></div>
         </div>
@@ -353,7 +353,7 @@ nav.main-nav a:hover {
     </div>
 </div>
 
-<!-- ===== СКРИПТОВЕ НА ДЪНОТО ===== -->
+<!-- ===== JS ФАЙЛОВЕ ===== -->
 <script src="players.js"></script>
 <script type="module" src="calendar.js"></script>
 
