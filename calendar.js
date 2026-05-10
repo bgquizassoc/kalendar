@@ -17,13 +17,13 @@ import {
 
 /* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
-    apiKey: "AIzaSyBG6msl90Jln_-xIwfLSVahc0NTWbR0uok",
-    authDomain: "cifromania-ac182.firebaseapp.com",
-    projectId: "cifromania-ac182",
-    storageBucket: "cifromania-ac182.firebasestorage.app",
-    messagingSenderId: "165200525580",
-    appId: "1:165200525580:web:ba63744ebe0527b6517129"
-  };
+  apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
+  authDomain: "cifromania-ac182.firebaseapp.com",
+  projectId: "cifromania-ac182",
+  storageBucket: "cifromania-ac182.appspot.com",
+  messagingSenderId: "165208255580",
+  appId: "1:165208255580:web:b36744f0eb527b6571129"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
