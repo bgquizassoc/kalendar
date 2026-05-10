@@ -34,11 +34,15 @@ signInAnonymously(auth)
     .then(() => console.log("Signed in anonymously"))
     .catch(err => console.error("Auth error:", err));
 
-/* ===== КАЛЕНДАР КОЛЕКЦИЯ ===== */
+/* ===== КОЛЕКЦИЯТА ЗА МАЙ ===== */
 const calendarRef = collection(db, "calendar", "may", "days");
 
-/* ===== ЗАРЕЖДАНЕ НА КАЛЕНДАРА ===== */
-function loadCalendar() {
+/* ============================================================
+   ЧАКАМЕ DOM‑а ДА СЕ ЗАРЕДИ, ЗА ДА МОЖЕМ ДА ЗАХАПЕМ КЛЕТКИТЕ
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ===== LIVE UPDATE ОТ FIRESTORE ===== */
     onSnapshot(calendarRef, snap => {
         snap.forEach(docSnap => {
             const day = docSnap.id;
@@ -47,78 +51,53 @@ function loadCalendar() {
 
             if (!cell) return;
 
-            cell.classList.remove("day-free", "day-taken", "day-mine");
-
+            // Показваме деня + текста вътре
             if (!data.takenBy) {
-                cell.classList.add("day-free");
-                cell.textContent = day;
+                cell.innerHTML = `<strong>${day}</strong>`;
             } else {
-                const savedId = localStorage.getItem("playerId");
-                if (data.uid === savedId) {
-                    cell.classList.add("day-mine");
-                    cell.textContent = `${day} — Ти`;
-                } else {
-                    cell.classList.add("day-taken");
-                    cell.textContent = `${day} — ${data.takenBy}`;
-                }
+                cell.innerHTML = `<strong>${day}</strong><br>${data.takenBy}`;
             }
         });
     });
-}
 
-loadCalendar();
+    /* ===== КЛИК ВЪРХУ КЛЕТКА ===== */
+    document.querySelectorAll(".day-cell").forEach(cell => {
+        cell.onclick = async () => {
 
-/* ===== ПРОВЕРКА ДАЛИ ИГРАЧЪТ ВЕЧЕ ИМА ДАТА ===== */
-async function playerAlreadyHasDate(playerId) {
-    const snap = await getDocs(calendarRef);
-    let found = false;
+            let playerId = localStorage.getItem("playerId");
+            let playerName = localStorage.getItem("playerName");
 
-    snap.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data.uid === playerId) found = true;
-    });
+            /* ===== ИСКАМЕ ID КОД ПРИ КЛИК ===== */
+            if (!playerId || !PLAYERS[playerId]) {
+                playerId = prompt("Въведи своя ID код:");
+                if (!PLAYERS[playerId]) {
+                    alert("Невалиден ID код.");
+                    return;
+                }
+                playerName = PLAYERS[playerId];
+                localStorage.setItem("playerId", playerId);
+                localStorage.setItem("playerName", playerName);
+            }
 
-    return found;
-}
+            const day = cell.dataset.day;
+            const docRef = doc(db, "calendar", "may", "days", day);
+            const docSnap = await getDoc(docRef);
 
-/* ===== ИЗБОР НА ДАТА ===== */
-document.querySelectorAll(".day-cell").forEach(cell => {
-    cell.onclick = async () => {
-
-        let playerId = localStorage.getItem("playerId");
-        let playerName = localStorage.getItem("playerName");
-
-        if (!playerId || !PLAYERS[playerId]) {
-            playerId = prompt("Въведи своя ID код:");
-            if (!PLAYERS[playerId]) {
-                alert("Невалиден ID код.");
+            /* ===== АКО ДЕНЯТ Е ЗАЕТ ===== */
+            if (docSnap.exists() && docSnap.data().takenBy) {
+                alert("Тази дата вече е заета.");
                 return;
             }
-            playerName = PLAYERS[playerId];
-            localStorage.setItem("playerId", playerId);
-            localStorage.setItem("playerName", playerName);
-        }
 
-        const day = cell.dataset.day;
-        const docRef = doc(db, "calendar", "may", "days", day);
-        const docSnap = await getDoc(docRef);
+            /* ===== ЗАПИСВАМЕ В FIRESTORE ===== */
+            await setDoc(docRef, {
+                takenBy: playerName,
+                uid: playerId,
+                timestamp: Date.now()
+            });
 
-        if (docSnap.exists() && docSnap.data().takenBy) {
-            alert("Тази дата вече е заета.");
-            return;
-        }
+            alert("Успешно избра дата!");
+        };
+    });
 
-        if (await playerAlreadyHasDate(playerId)) {
-            alert("Можеш да избереш само една дата.");
-            return;
-        }
-
-        await setDoc(docRef, {
-            takenBy: playerName,
-            uid: playerId,
-            timestamp: Date.now()
-        });
-
-        alert("Успешно избра дата!");
-    };
 });
