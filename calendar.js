@@ -1,21 +1,6 @@
-/* ===== FIREBASE SDK ===== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { 
-    getFirestore, 
-    doc, 
-    setDoc,
-    getDoc,
-    getDocs,
-    collection,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-import { 
-    getAuth,
-    signInAnonymously
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-
-/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
     apiKey: "AIzaSyBG6msl90Jln_-xIwfLSVahc0NTWbR0uok",
     authDomain: "cifromania-ac182.firebaseapp.com",
@@ -23,82 +8,63 @@ const firebaseConfig = {
     storageBucket: "cifromania-ac182.firebasestorage.app",
     messagingSenderId: "165200525580",
     appId: "1:165200525580:web:ba63744ebe0527b6517129"
-  };
-
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* ===== АНОНИМЕН AUTH ===== */
-signInAnonymously(auth)
-    .then(() => console.log("Signed in anonymously"))
-    .catch(err => console.error("Auth error:", err));
-
-/* ===== КОЛЕКЦИЯТА ЗА МАЙ ===== */
 const calendarRef = collection(db, "calendar", "may", "days");
 
-/* ============================================================
-   ЧАКАМЕ DOM‑а ДА СЕ ЗАРЕДИ, ЗА ДА МОЖЕМ ДА ЗАХАПЕМ КЛЕТКИТЕ
-   ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ===== LIVE UPDATE ОТ FIRESTORE ===== */
     onSnapshot(calendarRef, snap => {
         snap.forEach(docSnap => {
             const day = docSnap.id;
             const data = docSnap.data();
             const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
-
             if (!cell) return;
-
-            // Показваме деня + текста вътре
-            if (!data.takenBy) {
+            if (!data.text) {
                 cell.innerHTML = `<strong>${day}</strong>`;
             } else {
-                cell.innerHTML = `<strong>${day}</strong><br>${data.takenBy}`;
+                cell.innerHTML = `<strong>${day}</strong><br>${data.text}`;
             }
         });
     });
 
-    /* ===== КЛИК ВЪРХУ КЛЕТКА ===== */
     document.querySelectorAll(".day-cell").forEach(cell => {
         cell.onclick = async () => {
-
             let playerId = localStorage.getItem("playerId");
             let playerName = localStorage.getItem("playerName");
 
-            /* ===== ИСКАМЕ ID КОД ПРИ КЛИК ===== */
             if (!playerId || !window.PLAYERS[playerId]) {
-    playerId = prompt("Въведи своя ID код:");
-    if (!window.PLAYERS[playerId]) {        // ← тук беше пропуснато
-        alert("Невалиден ID код.");
-        return;
-    }
-    playerName = window.PLAYERS[playerId];
-    localStorage.setItem("playerId", playerId);
-    localStorage.setItem("playerName", playerName);
-}
+                playerId = prompt("Въведи своя ID код:");
+                if (!playerId || !window.PLAYERS[playerId]) {
+                    alert("Невалиден ID код.");
+                    return;
+                }
+                playerName = window.PLAYERS[playerId];
+                localStorage.setItem("playerId", playerId);
+                localStorage.setItem("playerName", playerName);
+            }
 
             const day = cell.dataset.day;
             const docRef = doc(db, "calendar", "may", "days", day);
             const docSnap = await getDoc(docRef);
 
-            /* ===== АКО ДЕНЯТ Е ЗАЕТ ===== */
             if (docSnap.exists() && docSnap.data().takenBy) {
                 alert("Тази дата вече е заета.");
                 return;
             }
 
-            /* ===== ЗАПИСВАМЕ В FIRESTORE ===== */
+            const text = prompt(`Опиши събитието за ${day} май:`);
+            if (!text) return;
+
             await setDoc(docRef, {
                 takenBy: playerName,
                 uid: playerId,
+                text: text,
                 timestamp: Date.now()
             });
-
-            alert("Успешно избра дата!");
+            alert("Успешно записа събитието!");
         };
     });
-
 });
