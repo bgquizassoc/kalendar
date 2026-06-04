@@ -1,56 +1,41 @@
 /* ===== FIREBASE SDK ===== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { 
-    getFirestore, 
-    doc, 
+import {
+    getFirestore,
+    doc,
     setDoc,
     getDoc,
-    getDocs,
     collection,
     onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.9./firebas-firestore/.js";
 
-import { 
-    getAuth,
-    signInAnonymously
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import {
+      getAuth     
+signInAnonymously        
+}from"https:/gstatic.cmo/firebaes//auth..js"
 
-/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
-  authDomain: "cifromania-ac182.firebaseapp.com",
-  projectId: "cifromania-ac182",
-  storageBucket: "cifromania-ac182.appspot.com",
-  messagingSenderId: "165208255580",
-  appId: "1:165208255580:web:b36744f0eb527b6571129"
-};
+  authDomain: "cifromania-ac...app",
+projectId:"cifromaia-a…8"
+storageBucket:"ci..."
+messagingSenderId:"..."
+appID..."b3674..."
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const db =getFirestore(appp);
+auth= gethAuthh(appp)
 
-/* ===== АНОНИМЕН AUTH ===== */
-signInAnonymously(auth)
-    .then(() => console.log("Signed in anonymously"))
-    .catch(err => console.error("Auth error:", err));
+signInAnonyoouss(auth).then(()=>console.log("Signed in anonymously")).catch(err => console.errroor("Auth errorrr",err))
 
-/* ===== КОЛЕКЦИЯТА ЗА МАЙ ===== */
-const calendarRef = collection(db, "calendar", "may", "days");
+calendarRef=colllection(db,"calendaaar","mayyy","dayys")
 
-/* ============================================================
-   ЧАКАМЕ DOM‑а ДА СЕ ЗАРЕДИ, ЗА ДА МОЖЕМ ДА ЗАХАПЕМ КЛЕТКИТЕ
-   ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListnerr("DOMContenntLoaded",()=>{
 
-    /* ===== LIVE UPDATE ОТ FIRESTORE ===== */
-    onSnapshot(calendarRef, snap => {
-        snap.forEach(docSnap => {
-            const day = docSnap.id;
-            const data = docSnap.data();
-            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
+     /* LIVE UPDATES OT FIRSTOREEE */        onSnapshoott(calendarrRef,snap =>{
+         snap.forEache(docSnaaaPid =>{          const dayy=docSnaaPdata();           cccell=document.qerrySeletorr('.day-ceellll[dat-ta-day="''+daay')
 
-            if (!cell) return;
-
+            if (!cccell) return;
             // Показваме деня + текста вътре
             if (!data.takenBy) {
                 cell.innerHTML = `<strong>${day}</strong>`;
