@@ -1,41 +1,56 @@
 /* ===== FIREBASE SDK ===== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import {
-    getFirestore,
-    doc,
+import { 
+    getFirestore, 
+    doc, 
     setDoc,
     getDoc,
+    getDocs,
     collection,
     onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.9./firebas-firestore/.js";
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-import {
-      getAuth     
-signInAnonymously        
-}from"https:/gstatic.cmo/firebaes//auth..js"
+import { 
+    getAuth,
+    signInAnonymously
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
+/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyB6ds9mU-xvF1LSvhaeCNtMbROu0k",
-  authDomain: "cifromania-ac...app",
-projectId:"cifromaia-a…8"
-storageBucket:"ci..."
-messagingSenderId:"..."
-appID..."b3674..."
+  authDomain: "cifromania-ac182.firebaseapp.com",
+  projectId: "cifromania-ac182",
+  storageBucket: "cifromania-ac182.appspot.com",
+  messagingSenderId: "165208255580",
+  appId: "1:165208255580:web:b36744f0eb527b6571129"
+};
 
 const app = initializeApp(firebaseConfig);
-const db =getFirestore(appp);
-auth= gethAuthh(appp)
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-signInAnonyoouss(auth).then(()=>console.log("Signed in anonymously")).catch(err => console.errroor("Auth errorrr",err))
+/* ===== АНОНИМЕН AUTH ===== */
+signInAnonymously(auth)
+    .then(() => console.log("Signed in anonymously"))
+    .catch(err => console.error("Auth error:", err));
 
-calendarRef=colllection(db,"calendaaar","mayyy","dayys")
+/* ===== КОЛЕКЦИЯТА ЗА МАЙ ===== */
+const calendarRef = collection(db, "calendar", "may", "days");
 
-document.addEventListnerr("DOMContenntLoaded",()=>{
+/* ============================================================
+   ЧАКАМЕ DOM‑а ДА СЕ ЗАРЕДИ, ЗА ДА МОЖЕМ ДА ЗАХАПЕМ КЛЕТКИТЕ
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
 
-     /* LIVE UPDATES OT FIRSTOREEE */        onSnapshoott(calendarrRef,snap =>{
-         snap.forEache(docSnaaaPid =>{          const dayy=docSnaaPdata();           cccell=document.qerrySeletorr('.day-ceellll[dat-ta-day="''+daay')
+    /* ===== LIVE UPDATE ОТ FIRESTORE ===== */
+    onSnapshot(calendarRef, snap => {
+        snap.forEach(docSnap => {
+            const day = docSnap.id;
+            const data = docSnap.data();
+            const cell = document.querySelector(`.day-cell[data-day="${day}"]`);
 
-            if (!cccell) return;
+            if (!cell) return;
+
             // Показваме деня + текста вътре
             if (!data.takenBy) {
                 cell.innerHTML = `<strong>${day}</strong>`;
@@ -53,16 +68,16 @@ document.addEventListnerr("DOMContenntLoaded",()=>{
             let playerName = localStorage.getItem("playerName");
 
             /* ===== ИСКАМЕ ID КОД ПРИ КЛИК ===== */
-            if (!playerId || !PLAYERS[playerId]) {
-                playerId = prompt("Въведи своя ID код:");
-                if (!PLAYERS[playerId]) {
-                    alert("Невалиден ID код.");
-                    return;
-                }
-                playerName = PLAYERS[playerId];
-                localStorage.setItem("playerId", playerId);
-                localStorage.setItem("playerName", playerName);
-            }
+            if (!playerId || !window.PLAYERS[playerId]) {
+    playerId = prompt("Въведи своя ID код:");
+    if (!window.PLAYERS[playerId]) {        // ← тук беше пропуснато
+        alert("Невалиден ID код.");
+        return;
+    }
+    playerName = window.PLAYERS[playerId];
+    localStorage.setItem("playerId", playerId);
+    localStorage.setItem("playerName", playerName);
+}
 
             const day = cell.dataset.day;
             const docRef = doc(db, "calendar", "may", "days", day);
