@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("Невалиден ID код.");
                     return;
                 }
-                playerName = window.PLAYERS[playerId];
+                playerName = PLAYERS[playerId];
                 localStorage.setItem("playerId", playerId);
                 localStorage.setItem("playerName", playerName);
             }
