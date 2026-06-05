@@ -36,9 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
             let playerId = localStorage.getItem("playerId");
             let playerName = localStorage.getItem("playerName");
 
-            if (!playerId || !window.PLAYERS[playerId]) {
+            if (!playerId || !PLAYERS[playerId]) {
                 playerId = prompt("Въведи своя ID код:");
-                if (!playerId || !window.PLAYERS[playerId]) {
+                if (!playerId || !PLAYERS[playerId]) {
                     alert("Невалиден ID код.");
                     return;
                 }
