@@ -87,19 +87,56 @@ nav.main-nav a:hover {
     transform: scale(1.05);
 }
 
+/* ===== MONTH NAV ===== */
+#monthNav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0 0;
+    flex-wrap: wrap;
+}
+
+.month-btn {
+    background-color: #003d7a;
+    border: 2px solid #00509e;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.month-btn:hover {
+    background-color: #004a9f;
+}
+
+.month-btn.active {
+    background-color: #ffcc00;
+    color: #001a33;
+    border-color: #ffcc00;
+}
+
 /* ===== CALENDAR ===== */
 .calendar-wrapper {
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 .calendar-title {
     font-size: 26px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .calendar-sub {
     font-size: 18px;
     color: #ffcc00;
+}
+
+#calendarMonthTitle {
+    font-size: 22px;
+    color: #ffcc00;
+    margin: 10px 0 0;
 }
 
 .calendar-grid {
@@ -138,6 +175,11 @@ nav.main-nav a:hover {
     color: white;
     overflow-wrap: break-word;
     word-break: break-word;
+    transition: background 0.2s;
+}
+
+.day-cell:hover {
+    background: #004a9f;
 }
 
 /* ===== PARTNERS ===== */
@@ -204,7 +246,6 @@ nav.main-nav a:hover {
     color: #ffd966;
     text-decoration: underline;
 }
-
 </style>
 </head>
 
@@ -231,93 +272,50 @@ nav.main-nav a:hover {
     <a href="#">Асоциация</a>
 </nav>
 
-<!-- ===== КАЛЕНДАР ЗА МАЙ 2026 ===== -->
+<!-- ===== КАЛЕНДАР ===== -->
 <div class="calendar-wrapper">
     <h2 class="calendar-title">
-        Избери си една дата и стани куиз конфигуратор 10<br>
+        Избери си една дата и стани куиз конфигуратор<br>
         <span class="calendar-sub">Настрой параметрите по куиза така, както ти харесва</span>
     </h2>
 
-    <div id="calendarMay" class="calendar-grid">
+    <!-- Бутони за месеци -->
+    <div id="monthNav"></div>
 
-        <div class="weekday">Пн</div>
-        <div class="weekday">Вт</div>
-        <div class="weekday">Ср</div>
-        <div class="weekday">Чт</div>
-        <div class="weekday">Пт</div>
-        <div class="weekday">Сб</div>
-        <div class="weekday">Нд</div>
+    <!-- Заглавие на текущия месец -->
+    <div id="calendarMonthTitle"></div>
 
-        <!-- празни клетки до петък -->
-        <div class="empty"></div>
-        <div class="empty"></div>
-        <div class="empty"></div>
-        <div class="empty"></div>
-
-        <!-- започваме от 1 май (петък) -->
-        <div class="day-cell" data-day="1">1</div>
-        <div class="day-cell" data-day="2">2</div>
-        <div class="day-cell" data-day="3">3</div>
-        <div class="day-cell" data-day="4">4</div>
-        <div class="day-cell" data-day="5">5</div>
-        <div class="day-cell" data-day="6">6</div>
-        <div class="day-cell" data-day="7">7</div>
-        <div class="day-cell" data-day="8">8</div>
-        <div class="day-cell" data-day="9">9</div>
-        <div class="day-cell" data-day="10">10</div>
-        <div class="day-cell" data-day="11">11</div>
-        <div class="day-cell" data-day="12">12</div>
-        <div class="day-cell" data-day="13">13</div>
-        <div class="day-cell" data-day="14">14</div>
-        <div class="day-cell" data-day="15">15</div>
-        <div class="day-cell" data-day="16">16</div>
-        <div class="day-cell" data-day="17">17</div>
-        <div class="day-cell" data-day="18">18</div>
-        <div class="day-cell" data-day="19">19</div>
-        <div class="day-cell" data-day="20">20</div>
-        <div class="day-cell" data-day="21">21</div>
-        <div class="day-cell" data-day="22">22</div>
-        <div class="day-cell" data-day="23">23</div>
-        <div class="day-cell" data-day="24">24</div>
-        <div class="day-cell" data-day="25">25</div>
-        <div class="day-cell" data-day="26">26</div>
-        <div class="day-cell" data-day="27">27</div>
-        <div class="day-cell" data-day="28">28</div>
-        <div class="day-cell" data-day="29">29</div>
-        <div class="day-cell" data-day="30">30</div>
-        <div class="day-cell" data-day="31">31</div>
-
-    </div>
+    <!-- Динамичен грид — пълни се от calendar.js -->
+    <div id="calendarGrid" class="calendar-grid"></div>
 </div>
 
 <!-- ===== ПАРТНЬОРИ ===== -->
 <div class="partners-wrapper">
     <div class="partners-title">Нашите партньори</div>
-
     <div class="partners-grid">
 
-       <div class="partner-cell">
+        <div class="partner-cell">
             <div class="partner-box"><img src="/partners/toto.png" alt="Български спортен тотализатор"></div>
             <div class="partner-name"><a href="https://toto.bg" target="_blank" rel="noopener">Български спортен тотализатор</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat_pecheli.png" alt="Последният печели (ТВ игра)"></div>
+            <div class="partner-box"><img src="/partners/posledniat_pecheli.png" alt="Последният печели"></div>
             <div class="partner-name"><a href="https://bnt.bg/news/posledniyat-pecheli-281378news.html" target="_blank" rel="noopener">Последният печели</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/stani_bogat.png" alt="Стани богат (ТВ игра)"></div>
+            <div class="partner-box"><img src="/partners/stani_bogat.png" alt="Стани богат"></div>
             <div class="partner-name"><a href="https://btvplus.bg/produkt/predavaniya/67912/stani-bogat/sezon-4" target="_blank" rel="noopener">Стани богат</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/minuta.png" alt="Минута е много (ТВ игра)"></div>
+            <div class="partner-box"><img src="/partners/minuta.png" alt="Минута е много"></div>
             <div class="partner-name"><a href="http://www.minutaemnogo.tv/" target="_blank" rel="noopener">Минута е много</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/igri_na_znania.png" alt="Игри на Знания (група)"></div>
+            <div class="partner-box"><img src="/partners/igri_na_znania.png" alt="Игри на Знания"></div>
             <div class="partner-name"><a href="https://www.facebook.com/groups/791002883500846/" target="_blank" rel="noopener">Игри на Знания</a></div>
         </div>
 
@@ -332,12 +330,12 @@ nav.main-nav a:hover {
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat1.png" alt="Последният печели (група 1)"></div>
+            <div class="partner-box"><img src="/partners/posledniat1.png" alt="Последният печели – група 1"></div>
             <div class="partner-name"><a href="https://www.facebook.com/groups/959830148105568?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 1</a></div>
         </div>
 
         <div class="partner-cell">
-            <div class="partner-box"><img src="/partners/posledniat2.png" alt="Последният печели (група 2)"></div>
+            <div class="partner-box"><img src="/partners/posledniat2.png" alt="Последният печели – група 2"></div>
             <div class="partner-name"><a href="https://www.facebook.com/groups/325290716277553?locale=bg_BG" target="_blank" rel="noopener">Последният печели – група 2</a></div>
         </div>
 
@@ -354,8 +352,7 @@ nav.main-nav a:hover {
     </div>
 </div>
 
-<!-- ===== JS ФАЙЛОВЕ ===== -->
-
+<!-- ===== JS ===== -->
 <script type="module" src="calendar.js"></script>
 
 </body>
