@@ -125,7 +125,7 @@ const PLAYERS = {
    player - един запис на месец (по подразбиране)
 */
 const ROLES = {
-  "77777": "admin",
+  "77777OK": "admin",
   "10802LA": "master",
   "67891RS": "master"
 };
