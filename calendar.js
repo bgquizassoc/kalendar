@@ -59,7 +59,7 @@ function renderCell(cell, events, day) {
     sorted.forEach(ev => {
         const isOwn = ev.uid === playerId;
         const color = isOwn ? "#ffcc00" : "#aaddff";
-        html += '<div style="margin-top:4px;font-size:12px;color:' + color + ';border-top:1px solid #00509e;padding-top:3px;text-align:left;">' + ev.text + '</div>';
+        html += '<div style="margin-top:4px;font-size:15px;color:' + color + ';border-top:1px solid #00509e;padding-top:3px;text-align:left;">' + ev.text + '</div>';
     });
     cell.innerHTML = html;
     if (events.some(e => e.uid === playerId)) {
