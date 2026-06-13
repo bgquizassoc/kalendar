@@ -128,6 +128,7 @@ const ROLES = {
   "77777OK": "admin",
   "10802LA": "master",
   "10104NR": "master",
+   "10105NR": "master",
   "67891RS": "master"
 };
  
