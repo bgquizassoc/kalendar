@@ -19,6 +19,7 @@ const MONTHS = [
     { key: "may",  label: "05/26", name: "Май 2026",  days: 31, startDay: 4 },
     { key: "june", label: "06/26", name: "Юни 2026",  days: 30, startDay: 0 },
     { key: "july", label: "07/26", name: "Юли 2026",  days: 31, startDay: 2 },
+    { key: "august", label: "08/26", name: "Август 2026",  days: 31, startDay: 5 },
 ];
 
 let currentMonthIndex = 0;
